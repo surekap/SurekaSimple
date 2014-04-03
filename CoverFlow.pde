@@ -82,6 +82,10 @@ void cf_keyPressed(){
   
 }
 
+void cf_pause(){
+  // The pause method is only called when the screensaver is activated.
+}
+
 void cf_back(){
   switchBack();
 }

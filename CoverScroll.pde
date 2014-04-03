@@ -57,6 +57,10 @@ void cs_keyPressed(){
   }
 }
 
+void cs_pause(){
+  // The pause method is only called when the screensaver is activated.
+}
+
 void cs_back(){
   switchBack();
 }

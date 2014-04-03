@@ -9,6 +9,12 @@ StringList CURRENT_APP = new StringList();
 float SIZE = 200;
 PFont FONT;
 
+// Screensaver variables
+int SCREENSAVER_DELAY;    // How long to wait before starting the screensaver (final variable - does not change)
+int LAST_INPUT_TIME;      // millis() when we received last input (except when in screensaver mode - then we calc when screensaver was exited)
+int SCREENSAVER_MODE;     // -1 if false, else the id number of the screensaver app
+int[] SCREENSAVERS = {90};
+
 StringList wordWrap(String s, int maxWidth){
   // Make an empty ArrayList
   StringList a = new StringList();
@@ -45,6 +51,10 @@ StringList wordWrap(String s, int maxWidth){
 }
 
 void setup() {
+  LAST_INPUT_TIME = millis();
+  SCREENSAVER_MODE = -1;
+  SCREENSAVER_DELAY = 1000 * 10;  // 10 seconds
+  
   size(1400, 800, OPENGL);
   background(0);
   rectMode(CENTER);
@@ -56,6 +66,13 @@ void setup() {
 }
 
 void draw(){
+  // Check for screensaver
+  if (SCREENSAVER_MODE == -1){
+    if ((millis() - LAST_INPUT_TIME) > SCREENSAVER_DELAY){
+      activateScreensaver();
+    }
+  } 
+  
   if (SELECTED == 0){
     cf_draw();
   }else if (SELECTED == 1){
@@ -66,10 +83,16 @@ void draw(){
     ia_draw();
   }else if (SELECTED == 4){
     pb_draw();
+  }else if (SELECTED == 90){
+    ps_draw();
   }
 }
 
 void keyPressed(){
+  if (SCREENSAVER_MODE == -1){
+    LAST_INPUT_TIME = millis();
+  }
+  
   if (SELECTED == 0){
     cf_keyPressed();
   }else if (SELECTED == 1){
@@ -80,6 +103,8 @@ void keyPressed(){
     ia_keyPressed();
   }else if (SELECTED == 4){
     pb_keyPressed();
+  }else if (SELECTED == 90){
+    ps_keyPressed();
   }
 
 }
@@ -128,16 +153,51 @@ void switchApp(String fn){
   }else if (appName.equals("PhotoBrowse")){
     pb_init(c);
     SELECTED = 4;
+  }else if (appName.equals("ParticleSaver")){
+    ps_init(c);
+    SELECTED = 90;
   }
 }
 
 void switchBack(){
+  String last_app = null;
+  if (SCREENSAVER_MODE > -1){
+    // Just shut off the screen saver and go back to where we were (without reiniting the app)
+    SCREENSAVER_MODE = -1;
+    LAST_INPUT_TIME = millis();
+    last_app = CURRENT_APP.remove(CURRENT_APP.size()-1);
+    switchApp(last_app);
+    return;
+  }
+  
   if (CURRENT_APP.size() == 1){
     return;  // Don't do anything if we are already at the home level
   }
   
   CURRENT_APP.remove(CURRENT_APP.size()-1);
-  String last_app = CURRENT_APP.remove(CURRENT_APP.size()-1);
+  last_app = CURRENT_APP.remove(CURRENT_APP.size()-1);
   switchApp(last_app);
 }
 
+void activateScreensaver(){
+  // Pause the current app
+  if (SELECTED == 0){
+    cf_pause();
+  }else if (SELECTED == 1){
+    cs_pause();
+  }else if (SELECTED == 2){
+    va_pause();
+  }else if (SELECTED == 3){
+    ia_pause();
+  }else if (SELECTED == 4){
+    pb_pause();
+  }else if (SELECTED == 90){
+    ps_pause();
+  }
+  
+  SELECTED = SCREENSAVER_MODE = SCREENSAVERS[int(random(0, SCREENSAVERS.length))];  // Set random screensaver
+  
+  if (SCREENSAVER_MODE == 90){
+    ps_init();
+  }
+}

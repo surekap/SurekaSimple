@@ -11,11 +11,15 @@ float maxLen = 100;
 float strokeAmount;
 
 Particle[] particles;
-int FIELDWIDTH = 320;
-int FIELDHEIGHT = 240;
+int FIELDWIDTH = 800;
+int FIELDHEIGHT = 600;
 
-void ps_setup() {
-  //size(800, 600);
+void ps_init(Table c){
+  ps_init();
+}
+
+void ps_init() {
+  
   colorMode(HSB, 100);
   background(0);  
   ps_randomize();
@@ -28,16 +32,20 @@ void ps_randomize(){
   strokeAmount = random(0.02,0.3);
   particles = new Particle[numParticles];
   
-  FIELDWIDTH = width;
-  FIELDHEIGHT = height;
+  //FIELDWIDTH = width;
+  //FIELDHEIGHT = height;
   
   for(int i=0; i<numParticles; i++){
     particles[i]=new Particle(i/5000.0);
   }
 }
 
-void mouseClicked() {
-  ps_randomize();
+void ps_keyPressed() {
+  if ((key == DELETE) || (key == BACKSPACE)){
+    ps_back();
+  }else{
+    ps_randomize();
+  }
 }
 
 void ps_draw() {
@@ -51,6 +59,14 @@ void ps_draw() {
     particles[i].update();//render particles
   } 
 
+}
+
+void ps_back(){
+  switchBack();
+}
+
+void ps_pause(){
+  numParticles = 0;
 }
 
 class Particle {
@@ -92,5 +108,4 @@ class Particle {
     len++;
     if (len >= maxLen) init();
   }
- 
 }

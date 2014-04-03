@@ -44,6 +44,10 @@ void ia_keyPressed(){
   
 }
 
+void ia_pause(){
+  // The pause method is only called when the screensaver is activated.
+}
+
 void ia_back(){
   switchBack();
 }

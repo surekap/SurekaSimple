@@ -116,6 +116,10 @@ void pb_left(){
   pb_moveTiles();
 }
 
+void pb_pause(){
+  // The pause method is only called when the screensaver is activated.
+}
+
 void pb_back(){
   switchBack();
 }

@@ -92,6 +92,10 @@ void va_keyPressed(){
   
 }
 
+void va_pause(){
+  // The pause method is only called when the screensaver is activated.
+  va_m.stop();
+}
 
 void va_enter(){
   if (va_status == 0){
